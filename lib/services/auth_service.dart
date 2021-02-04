@@ -5,4 +5,6 @@ class AuthService {
   // AuthService({FirebaseFirestore firestore}) {
   //   this.firestore = firestore ?? FirebaseFirestore.instance;
   // }
+
+  bool get isSignedIn => false;
 }
