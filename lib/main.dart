@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'config/service_configuration.dart';
 import 'pages/new_page.dart';
 
 void main() {
+  ServiceConfiguration.registerServices();
+
   runApp(MyApp());
 }
 
