@@ -1,24 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:skirmish/services/auth_service.dart';
 
-class LandingScreen extends StatefulWidget {
-  LandingScreen({Key key}) : super(key: key);
+import '../services/league_service.dart';
 
-  @override
-  _LandingScreenState createState() => _LandingScreenState();
-}
-
-class _LandingScreenState extends State<LandingScreen> {
-  final authService = GetIt.instance<AuthService>();
-
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
+class LandingScreen extends StatelessWidget {
+  final leagueService = GetIt.instance<LeagueService>();
 
   @override
   Widget build(BuildContext context) {
@@ -27,25 +13,31 @@ class _LandingScreenState extends State<LandingScreen> {
         title: Text('Skirmish'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            Text('Signed in? ${authService.isSignedIn}')
-          ],
-        ),
+        child: leagueList(context),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
+    );
+  }
+
+  Widget leagueList(BuildContext context) {
+    return StreamBuilder(
+      stream: leagueService.leagues(),
+      builder: (BuildContext context, AsyncSnapshot<List<League>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Text('Loading...');
+        } else if (snapshot.hasError) {
+          return Text(snapshot.error.toString());
+        }
+
+        final leagues = snapshot.data;
+
+        return Column(
+          children: leagues
+              .map(
+                (league) => Text(league.name),
+              )
+              .toList(),
+        );
+      },
     );
   }
 }
