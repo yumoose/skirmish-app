@@ -1,0 +1,50 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+import 'package:skirmish/services/auth_service.dart';
+
+import '../mocks/mock_firebase_auth.dart';
+import '../mocks/mock_firebase_user.dart';
+
+void main() {
+  final mockFirebaseAuth = MockFirebaseAuth();
+  final authService = AuthService(firebaseAuth: mockFirebaseAuth);
+
+  group('currentUser', () {
+    test('returns the currently signed in user', () async {
+      final mockFirebaseUser = MockFirebaseUser(uid: 'some-id');
+      when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
+
+      expect(authService.currentUser, equals(mockFirebaseUser));
+    });
+
+    test('when there is no user signed in', () async {
+      when(mockFirebaseAuth.currentUser).thenReturn(null);
+
+      expect(authService.currentUser, isNull);
+    });
+  });
+
+  group('isLoggedIn', () {
+    test('is true if there is a user currently signed in', () async {
+      final mockFirebaseUser = MockFirebaseUser(uid: 'some-id');
+      when(mockFirebaseAuth.currentUser).thenReturn(mockFirebaseUser);
+
+      expect(authService.isLoggedIn, isTrue);
+    });
+
+    test('is false if there is not a user currently signed in', () async {
+      when(mockFirebaseAuth.currentUser).thenReturn(null);
+
+      expect(authService.isLoggedIn, isFalse);
+    });
+  });
+
+  group('signOut', () {
+    test('signs the user out', () async {
+      await authService.signOut();
+
+      verify(mockFirebaseAuth.signOut());
+    });
+  });
+}
