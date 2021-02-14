@@ -1,13 +1,19 @@
 name: Lint and Unit Test
 
 on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
     paths:
       - 'lib/**'
       - 'test/**'
-  workflow_dispatch:
-
 
 jobs:
   lint:
@@ -34,7 +40,6 @@ jobs:
 
       - name: Run Flutter analyze
         run: flutter analyze
-
 
   test:
     name: Unit Test
