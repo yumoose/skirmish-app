@@ -1,0 +1,68 @@
+name: Lint and Unit Test
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    paths:
+      - 'lib/**'
+      - 'test/**'
+  workflow_dispatch:
+
+
+jobs:
+  lint:
+    name: Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.26.x'
+          channel: 'beta'
+
+      - name: Setup Flutter
+        run: |
+          dart --version
+          flutter --version
+          flutter config --enable-web
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run Flutter analyze
+        run: flutter analyze
+
+
+  test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '1.26.x'
+          channel: 'beta'
+
+      - name: Setup Flutter
+        run: |
+          dart --version
+          flutter --version
+          flutter config --enable-web
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Run unit tests
+        run: flutter test --coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          files: ./coverage/lcov.info
