@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:skirmish/models/league.dart';
 
 class LeagueService {
   FirebaseFirestore firestore;
@@ -19,14 +20,4 @@ class LeagueService {
       }).toList();
     });
   }
-}
-
-class League {
-  final String id;
-  final String name;
-
-  League({
-    this.id,
-    this.name,
-  });
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:skirmish/models/league.dart';
 
 import '../services/league_service.dart';
 
@@ -23,7 +24,7 @@ class LandingScreen extends StatelessWidget {
       stream: leagueService.leagues(),
       builder: (BuildContext context, AsyncSnapshot<List<League>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Text('Loading...');
+          return CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
         }
@@ -31,11 +32,7 @@ class LandingScreen extends StatelessWidget {
         final leagues = snapshot.data;
 
         return Column(
-          children: leagues
-              .map(
-                (league) => Text(league.name),
-              )
-              .toList(),
+          children: leagues.map((league) => Text(league.name)).toList(),
         );
       },
     );
