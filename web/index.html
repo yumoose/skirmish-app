@@ -28,8 +28,27 @@
 
   <title>Skirmish</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    html, body {
+      background: #232323;
+      height: 100%;
+    }
+
+    .loader {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
+  <div class='loader'>
+    <img src="loader.svg" alt="Loading" />
+  </div>
+
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
