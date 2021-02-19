@@ -5,6 +5,7 @@ import 'package:skirmish/screens/account_screen.dart';
 import 'package:skirmish/screens/auth/password_reset_screen.dart';
 import 'package:skirmish/screens/auth/sign_in_screen.dart';
 import 'package:skirmish/screens/landing_screen.dart';
+import 'package:skirmish/screens/leagues_screen.dart';
 import 'package:skirmish/screens/not_found_screen.dart';
 
 abstract class Locations {
@@ -14,6 +15,8 @@ abstract class Locations {
   static final List<BeamLocation> beamLocations = [
     LandingLocation(),
     AuthLocation(),
+    AccountLocation(),
+    LeaguesLocation(),
   ];
 }
 
@@ -47,10 +50,11 @@ class AuthLocation extends BeamLocation {
   @override
   List<BeamPage> get pages => [
         ...LandingLocation().pages,
-        BeamPage(
-          key: ValueKey('auth'),
-          child: SignInScreen(),
-        ),
+        if (pathSegments.contains('auth'))
+          BeamPage(
+            key: ValueKey('auth'),
+            child: SignInScreen(),
+          ),
         if (pathSegments.contains('password_reset'))
           BeamPage(
             key: ValueKey('password-reset'),
@@ -72,9 +76,27 @@ class AccountLocation extends BeamLocation {
   @override
   List<BeamPage> get pages => [
         ...LandingLocation().pages,
-        BeamPage(
-          key: ValueKey('account'),
-          child: AccountScreen(),
-        ),
+        if (pathSegments.contains('account'))
+          BeamPage(
+            key: ValueKey('account'),
+            child: AccountScreen(),
+          ),
+      ];
+}
+
+class LeaguesLocation extends BeamLocation {
+  LeaguesLocation() : super(pathBlueprint: '/leagues');
+
+  @override
+  List<String> get pathBlueprints => ['/leagues'];
+
+  @override
+  List<BeamPage> get pages => [
+        ...LandingLocation().pages,
+        if (pathSegments.contains('leagues'))
+          BeamPage(
+            key: ValueKey('leagues'),
+            child: LeaguesScreen(),
+          ),
       ];
 }
