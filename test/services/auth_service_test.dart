@@ -5,10 +5,16 @@ import 'package:skirmish/services/auth_service.dart';
 
 import '../mocks/mock_firebase_auth.dart';
 import '../mocks/mock_firebase_user.dart';
+import '../mocks/mock_firestore.dart';
 
 void main() {
   final mockFirebaseAuth = MockFirebaseAuth();
-  final authService = AuthService(firebaseAuth: mockFirebaseAuth);
+  final mockFirestore = MockFirestore();
+
+  final authService = AuthService(
+    firebaseAuth: mockFirebaseAuth,
+    firestore: mockFirestore,
+  );
 
   group('currentUser', () {
     test('returns the currently signed in user', () async {
