@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:skirmish/models/player.dart';
@@ -13,10 +12,6 @@ class AccountScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Account'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Beamer.of(context).beamBack(),
-        ),
       ),
       body: StreamBuilder(
         stream: _authService.currentPlayer,

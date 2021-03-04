@@ -11,12 +11,13 @@ class SkirmishApp extends StatelessWidget {
       darkTheme: SkirmishTheme.dark,
       debugShowCheckedModeBanner: false,
       routerDelegate: BeamerRouterDelegate(
-        initialLocation: Locations.initialLocation,
-        notFoundPage: Locations.notFoundScreen,
-      ),
-      routeInformationParser: BeamerRouteInformationParser(
         beamLocations: Locations.beamLocations,
+        notFoundPage: BeamPage(
+          key: ValueKey('not-found'),
+          child: Locations.notFoundScreen,
+        ),
       ),
+      routeInformationParser: BeamerRouteInformationParser(),
     );
   }
 }
