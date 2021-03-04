@@ -144,13 +144,13 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
         height: 50.0,
         child: ElevatedButton(
           key: Key('auth_submit'),
+          onPressed: submitEnabled ? _submit : null,
           child: _isLoading
               ? CircularProgressIndicator()
               : Text(
                   submitText,
                   style: TextStyle(fontSize: 20.0),
                 ),
-          onPressed: submitEnabled ? _submit : null,
         ),
       ),
       SizedBox(
@@ -158,23 +158,23 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       ),
       TextButton(
         key: Key('auth_form_switch'),
-        child: _switchFormRichText(),
         onPressed: _isLoading ? null : _toggleFormType,
+        child: _switchFormRichText(),
       ),
       if (showPasswordReset)
         TextButton(
           key: Key('password_reset_button'),
+          onPressed: _isLoading
+              ? null
+              : () async => Beamer.of(context).updateCurrentLocation(
+                    pathBlueprint: '/auth/password_reset',
+                  ),
           child: Text(
             'Forgot your password?',
             style: TextStyle(
               color: Theme.of(context).primaryColor,
             ),
           ),
-          onPressed: _isLoading
-              ? null
-              : () async => await Beamer.of(context).updateCurrentLocation(
-                    pathBlueprint: '/auth/password_reset',
-                  ),
         ),
     ];
   }

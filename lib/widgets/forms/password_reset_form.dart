@@ -65,25 +65,25 @@ class _PasswordResetFormState extends State<PasswordResetForm> {
         height: 24.0,
       ),
       ElevatedButton(
+        onPressed: submitEnabled ? _submit : null,
         child:
             _isLoading ? CircularProgressIndicator() : Text('Reset password'),
-        onPressed: submitEnabled ? _submit : null,
       ),
       SizedBox(
         height: 16.0,
       ),
       TextButton(
+        onPressed: _isLoading
+            ? null
+            : () => Beamer.of(context).updateCurrentLocation(
+                  pathBlueprint: '/auth',
+                ),
         child: Text(
           'Cancel',
           style: TextStyle(
             color: Theme.of(context).primaryColor,
           ),
         ),
-        onPressed: _isLoading
-            ? null
-            : () => Beamer.of(context).updateCurrentLocation(
-                  pathBlueprint: '/auth',
-                ),
       ),
     ];
   }

@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:skirmish/models/player.dart';
@@ -13,10 +12,6 @@ class AccountScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Account'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Beamer.of(context).beamBack(),
-        ),
       ),
       body: StreamBuilder(
         stream: _authService.currentPlayer,
@@ -54,12 +49,12 @@ class AccountScreen extends StatelessWidget {
             SizedBox(height: 48),
             TextButton(
               key: Key('auth_log_out'),
-              child: Text(
-                'Log out',
-              ),
               style: TextButton.styleFrom(primary: Colors.redAccent),
               onPressed: () async => await _showLogoutDialog(
                 context,
+              ),
+              child: Text(
+                'Log out',
               ),
             ),
           ],
@@ -79,14 +74,13 @@ class AccountScreen extends StatelessWidget {
           content: 'Are you sure you want to log out?',
           customActions: [
             PlatformAlertDialogAction(
-              child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: Text('Cancel'),
             ),
             PlatformAlertDialogAction(
               key: Key('confirm_log_out'),
-              child: Text('Log out'),
               danger: true,
               onPressed: () async {
                 final navigator = Navigator.of(context);
@@ -98,6 +92,7 @@ class AccountScreen extends StatelessWidget {
                   navigator.pop();
                 }
               },
+              child: Text('Log out'),
             ),
           ],
         );
