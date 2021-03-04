@@ -60,19 +60,19 @@ class PlatformAlertDialog extends PlatformWidget {
     if (cancelActionText != null) {
       actions.add(
         PlatformAlertDialogAction(
-          child: Text(cancelActionText),
           onPressed: () => Navigator.of(context).pop(false),
           danger: true,
+          child: Text(cancelActionText),
         ),
       );
     }
 
     actions.add(PlatformAlertDialogAction(
+      onPressed: () => Navigator.of(context).pop(true),
       child: Text(
         defaultActionText,
         style: TextStyle(color: defaultActionColor),
       ),
-      onPressed: () => Navigator.of(context).pop(true),
     ));
 
     return actions;
@@ -103,17 +103,17 @@ class PlatformAlertDialogAction extends PlatformWidget {
   @override
   Widget buildCupertinoWidget(BuildContext context) {
     return CupertinoDialogAction(
-      child: child,
       onPressed: onPressed,
+      child: child,
     );
   }
 
   @override
   Widget buildMaterialWidget(BuildContext context) {
     return TextButton(
-      child: child,
       onPressed: onPressed,
       style: danger ? TextButton.styleFrom(primary: Colors.redAccent) : null,
+      child: child,
     );
   }
 }
