@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockFirestore extends Mock implements FirebaseFirestore {
   // Required to fix conflicts between mock and original equality sigs
