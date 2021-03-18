@@ -1,6 +1,6 @@
 class League {
-  final String id;
-  String name;
+  final String? id;
+  String? name;
 
   League({
     this.id,

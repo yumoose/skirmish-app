@@ -14,7 +14,7 @@ class PasswordResetForm extends StatefulWidget with AuthValidators {
 }
 
 class _PasswordResetFormState extends State<PasswordResetForm> {
-  final _authService = GetIt.instance<AuthService>();
+  final AuthService? _authService = GetIt.instance<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class _PasswordResetFormState extends State<PasswordResetForm> {
   }
 
   List<Widget> _buildChildren() {
-    String emailError;
+    String? emailError;
     if (_submitted) {
       widget.emailValidator
           .isValid(_email)
@@ -89,7 +89,7 @@ class _PasswordResetFormState extends State<PasswordResetForm> {
   }
 
   TextField _buildEmailTextField() {
-    String emailError;
+    String? emailError;
     if (_submitted) {
       widget.nameValidator
           .isValid(_email)
@@ -120,7 +120,7 @@ class _PasswordResetFormState extends State<PasswordResetForm> {
     });
 
     try {
-      await _authService.resetPassword(email: _email);
+      await _authService!.resetPassword(email: _email);
 
       await PlatformAlertDialog(
         title: 'Password Reset',
@@ -133,7 +133,7 @@ class _PasswordResetFormState extends State<PasswordResetForm> {
     } on PlatformException catch (e) {
       await PlatformAlertDialog(
         title: 'Password reset failed',
-        content: e.message,
+        content: e.message!,
         defaultActionText: 'OK',
       ).show(context);
     } finally {

@@ -5,27 +5,25 @@ import 'package:universal_platform/universal_platform.dart';
 
 class PlatformAlertDialog extends PlatformWidget {
   @override
-  final Key key;
+  final Key? key;
 
   PlatformAlertDialog({
     this.key,
-    @required this.title,
-    @required this.content,
+    required this.title,
+    required this.content,
     this.defaultActionText = 'OK',
     this.defaultActionColor,
     this.cancelActionText,
     this.customActions,
     this.isLoading = false,
-  })  : assert(title != null),
-        assert(content != null),
-        assert(defaultActionText != null || customActions.isNotEmpty);
+  });
 
   final String title;
   final String content;
   final String defaultActionText;
-  final Color defaultActionColor;
-  final String cancelActionText;
-  final List<PlatformAlertDialogAction> customActions;
+  final Color? defaultActionColor;
+  final String? cancelActionText;
+  final List<PlatformAlertDialogAction>? customActions;
   final bool isLoading;
 
   @override
@@ -36,7 +34,7 @@ class PlatformAlertDialog extends PlatformWidget {
         style: TextStyle(color: Theme.of(context).primaryColor),
       ),
       content: isLoading ? CircularProgressIndicator() : Text(content),
-      actions: _buildActions(context),
+      actions: _buildActions(context)!,
     );
   }
 
@@ -52,7 +50,7 @@ class PlatformAlertDialog extends PlatformWidget {
     );
   }
 
-  List<Widget> _buildActions(BuildContext context) {
+  List<Widget>? _buildActions(BuildContext context) {
     if (customActions != null) return customActions;
 
     final actions = <Widget>[];
@@ -62,7 +60,7 @@ class PlatformAlertDialog extends PlatformWidget {
         PlatformAlertDialogAction(
           onPressed: () => Navigator.of(context).pop(false),
           danger: true,
-          child: Text(cancelActionText),
+          child: Text(cancelActionText!),
         ),
       );
     }
@@ -78,7 +76,7 @@ class PlatformAlertDialog extends PlatformWidget {
     return actions;
   }
 
-  Future<bool> show(BuildContext context) async {
+  Future<bool?> show(BuildContext context) async {
     return UniversalPlatform.isIOS
         ? await showCupertinoDialog<bool>(
             context: context, builder: (context) => this)
@@ -95,16 +93,16 @@ class PlatformAlertDialogAction extends PlatformWidget {
   });
 
   @override
-  final Key key;
-  final Widget child;
-  final VoidCallback onPressed;
+  final Key? key;
+  final Widget? child;
+  final VoidCallback? onPressed;
   final bool danger;
 
   @override
   Widget buildCupertinoWidget(BuildContext context) {
     return CupertinoDialogAction(
       onPressed: onPressed,
-      child: child,
+      child: child!,
     );
   }
 
@@ -113,7 +111,7 @@ class PlatformAlertDialogAction extends PlatformWidget {
     return TextButton(
       onPressed: onPressed,
       style: danger ? TextButton.styleFrom(primary: Colors.redAccent) : null,
-      child: child,
+      child: child!,
     );
   }
 }

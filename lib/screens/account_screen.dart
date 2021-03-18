@@ -5,7 +5,7 @@ import 'package:skirmish/services/auth_service.dart';
 import 'package:skirmish/widgets/dialogs/platform_alert_dialog.dart';
 
 class AccountScreen extends StatelessWidget {
-  final _authService = GetIt.instance<AuthService>();
+  final AuthService? _authService = GetIt.instance<AuthService>();
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +14,8 @@ class AccountScreen extends StatelessWidget {
         title: Text('Account'),
       ),
       body: StreamBuilder(
-        stream: _authService.currentPlayer,
-        builder: (BuildContext context, AsyncSnapshot<Player> snapshot) {
+        stream: _authService!.currentPlayer,
+        builder: (BuildContext context, AsyncSnapshot<Player?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
@@ -23,7 +23,7 @@ class AccountScreen extends StatelessWidget {
           }
 
           if (snapshot.hasData) {
-            final player = snapshot.data;
+            final player = snapshot.data!;
 
             return Center(
               child: accountActions(context, player),
@@ -86,7 +86,7 @@ class AccountScreen extends StatelessWidget {
                 final navigator = Navigator.of(context);
 
                 navigator.pop();
-                await _authService.signOut();
+                await _authService!.signOut();
 
                 if (navigator.canPop()) {
                   navigator.pop();

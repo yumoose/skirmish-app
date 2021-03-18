@@ -9,10 +9,10 @@ class Match {
     this.nextMatchId,
   });
 
-  final String id;
-  String tournamentId;
-  String playerAId;
-  String playerBId;
-  String winerId;
-  String nextMatchId;
+  final String? id;
+  String? tournamentId;
+  String? playerAId;
+  String? playerBId;
+  String? winerId;
+  String? nextMatchId;
 }

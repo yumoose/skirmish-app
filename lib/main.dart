@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       future: _initialization,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          throw snapshot.error;
+          throw snapshot.error!;
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
