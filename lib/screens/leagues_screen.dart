@@ -22,7 +22,7 @@ class LeagueList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<League>>(
+    return StreamBuilder<Iterable<League>>(
       stream: _leagueService!.leagues(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -40,7 +40,7 @@ class LeagueList extends StatelessWidget {
                 (league) => Card(
                   child: ListTile(
                     leading: FlutterLogo(),
-                    title: Text(league.name!),
+                    title: Text(league.name),
                   ),
                 ),
               )

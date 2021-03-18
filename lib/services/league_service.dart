@@ -8,16 +8,14 @@ class LeagueService {
     this.firestore = firestore ?? FirebaseFirestore.instance;
   }
 
-  Stream<List<League>> leagues() {
+  Stream<Iterable<League>> leagues() {
     return firestore.collection('leagues').snapshots().map((leagues) {
       return leagues.docs.map((leagueDocument) {
-        final leagueData = leagueDocument.data()!;
-
-        return League(
+        return League.fromSnapshot(
           id: leagueDocument.id,
-          name: leagueData['name'] as String?,
+          snapshot: leagueDocument.data()!,
         );
-      }).toList();
+      });
     });
   }
 }

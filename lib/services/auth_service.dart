@@ -69,7 +69,10 @@ class AuthService {
     final playerRef = _firestore.collection('players').doc(id);
     final updatedPlayerDoc = await playerRef.get();
 
-    return Player.fromDocumentSnapshot(updatedPlayerDoc);
+    return Player.fromSnapshot(
+      id: updatedPlayerDoc.id,
+      snapshot: updatedPlayerDoc.data()!,
+    );
   }
 
   Future<Player> _createSkirmishUserProfile({
