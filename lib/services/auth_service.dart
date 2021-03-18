@@ -1,21 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:skirmish/models/player.dart';
 
 class AuthService {
-  FirebaseAuth _firebaseAuth;
-  FirebaseFirestore _firestore;
+  late FirebaseAuth _firebaseAuth;
+  late FirebaseFirestore _firestore;
 
   AuthService({
-    FirebaseAuth firebaseAuth,
-    FirebaseFirestore firestore,
+    FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firestore,
   }) {
     _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
     _firestore = firestore ?? FirebaseFirestore.instance;
   }
 
-  Stream<Player> get currentPlayer {
+  Stream<Player?> get currentPlayer {
     return _firebaseAuth.userChanges().asyncMap(
           (user) async => user != null
               ? await _fetchPlayer(
@@ -25,10 +24,11 @@ class AuthService {
         );
   }
 
-  User get currentUser => _firebaseAuth.currentUser;
+  User? get currentUser => _firebaseAuth.currentUser;
   bool get isLoggedIn => currentUser != null;
 
-  Future<User> signInWithEmailAndPassword(String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(
+      String email, String password) async {
     final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
       email: email,
       password: password,
@@ -38,10 +38,10 @@ class AuthService {
   }
 
   Future<Player> createUserWithEmailAndPassword({
-    String email,
-    String password,
-    String name,
-    String tag,
+    required String email,
+    required String password,
+    String? name,
+    String? tag,
   }) async {
     final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
@@ -49,7 +49,7 @@ class AuthService {
     );
 
     final player = await _createSkirmishUserProfile(
-      user: userCredential.user,
+      user: userCredential.user!,
       name: name,
       tag: tag,
     );
@@ -57,7 +57,7 @@ class AuthService {
     return player;
   }
 
-  Future resetPassword({String email}) async {
+  Future resetPassword({required String email}) async {
     await _firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
@@ -65,7 +65,7 @@ class AuthService {
     await _firebaseAuth.signOut();
   }
 
-  Future<Player> _fetchPlayer({String id}) async {
+  Future<Player> _fetchPlayer({String? id}) async {
     final playerRef = _firestore.collection('players').doc(id);
     final updatedPlayerDoc = await playerRef.get();
 
@@ -73,9 +73,9 @@ class AuthService {
   }
 
   Future<Player> _createSkirmishUserProfile({
-    @required User user,
-    @required String name,
-    @required String tag,
+    required User user,
+    required String? name,
+    required String? tag,
   }) async {
     final playerRef = _firestore.collection('players').doc(user.uid);
 

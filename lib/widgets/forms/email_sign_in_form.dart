@@ -13,14 +13,14 @@ enum EmailSignInFormType { signIn, register }
 class EmailSignInForm extends StatefulWidget with AuthValidators {
   final bool registration;
 
-  EmailSignInForm({Key key, this.registration = false}) : super(key: key);
+  EmailSignInForm({Key? key, this.registration = false}) : super(key: key);
 
   @override
   _EmailSignInFormState createState() => _EmailSignInFormState();
 }
 
 class _EmailSignInFormState extends State<EmailSignInForm> {
-  final AuthService _authService = GetIt.instance<AuthService>();
+  final AuthService? _authService = GetIt.instance<AuthService>();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _userNameController = TextEditingController();
@@ -39,7 +39,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   bool _submitted = false;
   bool _isLoading = false;
 
-  EmailSignInFormType _formType;
+  EmailSignInFormType? _formType;
 
   @override
   void initState() {
@@ -92,7 +92,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
     final linkStyle = Theme.of(context)
         .textTheme
-        .bodyText1
+        .bodyText1!
         .copyWith(color: Theme.of(context).primaryColor);
 
     return RichText(
@@ -180,7 +180,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   TextField _buildEmailTextField() {
-    String emailError;
+    String? emailError;
     if (_submitted) {
       widget.emailValidator
           .isValid(_email)
@@ -218,7 +218,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   TextField _buildNameTextField() {
-    String nameError;
+    String? nameError;
     if (_submitted) {
       widget.nameValidator
           .isValid(_email)
@@ -252,7 +252,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   }
 
   TextField _buildTagTextField() {
-    String userTagError;
+    String? userTagError;
     if (_submitted) {
       widget.nameValidator
           .isValid(_userTag)
@@ -314,14 +314,14 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
     try {
       if (_formType == EmailSignInFormType.signIn) {
-        await _authService.signInWithEmailAndPassword(
+        await _authService!.signInWithEmailAndPassword(
           _email,
           _password,
         );
 
         Beamer.of(context).beamBack();
       } else if (_formType == EmailSignInFormType.register) {
-        final auth = _authService;
+        final auth = _authService!;
 
         await auth.createUserWithEmailAndPassword(
           email: _email,

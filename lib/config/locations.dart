@@ -36,9 +36,9 @@ class LandingLocation extends BeamLocation {
 }
 
 class AuthLocation extends BeamLocation {
-  AuthLocation({String pathBlueprint})
+  AuthLocation({String? pathBlueprint = '/auth'})
       : super(
-          pathBlueprint: pathBlueprint ?? '/auth',
+          pathBlueprint: pathBlueprint,
         );
 
   @override

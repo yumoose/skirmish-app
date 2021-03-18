@@ -8,8 +8,8 @@ import 'package:skirmish/services/auth_service.dart';
 import 'package:skirmish/services/league_service.dart';
 
 class LandingScreen extends StatelessWidget {
-  final _authService = GetIt.instance<AuthService>();
-  final _leagueService = GetIt.instance<LeagueService>();
+  final AuthService? _authService = GetIt.instance<AuthService>();
+  final LeagueService? _leagueService = GetIt.instance<LeagueService>();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class LandingScreen extends StatelessWidget {
 
   Widget leagueList(BuildContext context) {
     return StreamBuilder(
-      stream: _leagueService.leagues(),
+      stream: _leagueService!.leagues(),
       builder: (BuildContext context, AsyncSnapshot<List<League>> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -39,18 +39,18 @@ class LandingScreen extends StatelessWidget {
           return Text(snapshot.error.toString());
         }
 
-        final leagues = snapshot.data;
+        final leagues = snapshot.data!;
 
         return Column(
-          children: leagues.map((league) => Text(league.name)).toList(),
+          children: leagues.map((league) => Text(league.name!)).toList(),
         );
       },
     );
   }
 
   Widget _accountAction() {
-    return StreamBuilder<Player>(
-      stream: _authService.currentPlayer,
+    return StreamBuilder<Player?>(
+      stream: _authService!.currentPlayer,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return IconButton(

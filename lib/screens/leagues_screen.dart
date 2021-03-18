@@ -18,12 +18,12 @@ class LeaguesScreen extends StatelessWidget {
 }
 
 class LeagueList extends StatelessWidget {
-  final _leagueService = GetIt.instance<LeagueService>();
+  final LeagueService? _leagueService = GetIt.instance<LeagueService>();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<League>>(
-      stream: _leagueService.leagues(),
+      stream: _leagueService!.leagues(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -33,14 +33,14 @@ class LeagueList extends StatelessWidget {
           return Text('Error loading leagues');
         }
 
-        final leagues = snapshot.data;
+        final leagues = snapshot.data!;
         return ListView(
           children: leagues
               .map(
                 (league) => Card(
                   child: ListTile(
                     leading: FlutterLogo(),
-                    title: Text(league.name),
+                    title: Text(league.name!),
                   ),
                 ),
               )
