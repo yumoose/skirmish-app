@@ -1,5 +1,21 @@
 {
-    "name": "Flutter",
-    "image": "matspfeiffer/flutter:beta",
-    "extensions": ["dart-code.dart-code", "dart-code.flutter"]
-  }
+  "name": "Flutter",
+  "context": "..",
+  "dockerFile": "./Dockerfile",
+  "remoteUser": "developer",
+  // "mounts": [
+  //  "source=/dev/bus/usb,target=/dev/bus/usb,type=bind"
+  // ],
+  "settings": {
+   "terminal.integrated.shell.linux": null
+  },
+  "runArgs": ["--privileged"],
+  "extensions": [
+    "dart-code.flutter",
+    "dbaeumer.vscode-eslint",
+    "toba.vsfire"
+  ],
+  "workspaceMount": "source=${localWorkspaceFolder}/workspace,target=/home/developer/workspace,type=bind,consistency=delegated",
+  "workspaceFolder": "/home/developer/workspace",
+  "postCreateCommand": "./setup.sh"
+ }
