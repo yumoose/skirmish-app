@@ -22,7 +22,9 @@ class LandingScreen extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => Beamer.of(context).beamTo(LeaguesLocation()),
+          onPressed: () => Beamer.of(context).beamTo(
+            LeaguesLocation.leagues(),
+          ),
           child: Text('View Leagues'),
         ),
       ),

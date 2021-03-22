@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:skirmish/exceptions/auth_exception.dart';
 import 'package:skirmish/models/player.dart';
 
 class AuthService {
@@ -88,5 +89,9 @@ class AuthService {
     }, SetOptions(merge: true));
 
     return _fetchPlayer(id: user.uid);
+  }
+
+  Future assertLoggedIn() async {
+    if (!isLoggedIn) throw MustBeLoggedInException();
   }
 }

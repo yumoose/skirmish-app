@@ -5,6 +5,7 @@ import 'package:skirmish/screens/account_screen.dart';
 import 'package:skirmish/screens/auth/password_reset_screen.dart';
 import 'package:skirmish/screens/auth/sign_in_screen.dart';
 import 'package:skirmish/screens/landing_screen.dart';
+import 'package:skirmish/screens/leagues/league_screen.dart';
 import 'package:skirmish/screens/leagues_screen.dart';
 import 'package:skirmish/screens/not_found_screen.dart';
 
@@ -86,9 +87,16 @@ class AccountLocation extends BeamLocation {
 
 class LeaguesLocation extends BeamLocation {
   LeaguesLocation() : super(pathBlueprint: '/leagues');
+  LeaguesLocation.leagues() : super(pathBlueprint: '/leagues');
+
+  LeaguesLocation.league({
+    required String leagueId,
+  }) : super(pathBlueprint: '/leagues/$leagueId');
 
   @override
-  List<String> get pathBlueprints => ['/leagues/'];
+  List<String> get pathBlueprints => [
+        '/leagues/:leagueId',
+      ];
 
   @override
   List<BeamPage> pagesBuilder(BuildContext context) => [
@@ -97,6 +105,11 @@ class LeaguesLocation extends BeamLocation {
           BeamPage(
             key: ValueKey('leagues'),
             child: LeaguesScreen(),
+          ),
+        if (pathParameters.containsKey('leagueId'))
+          BeamPage(
+            key: ValueKey('league'),
+            child: LeagueScreen(leagueId: pathParameters['leagueId']!),
           ),
       ];
 }

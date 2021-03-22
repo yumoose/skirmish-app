@@ -1,7 +1,9 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
+import 'package:skirmish/config/locations.dart';
 import 'package:skirmish/models/league.dart';
 import 'package:skirmish/services/league_service.dart';
+import 'package:skirmish/utils/dependency_injection.dart';
 
 class LeaguesScreen extends StatelessWidget {
   @override
@@ -18,12 +20,12 @@ class LeaguesScreen extends StatelessWidget {
 }
 
 class LeagueList extends StatelessWidget {
-  final LeagueService? _leagueService = GetIt.instance<LeagueService>();
+  final LeagueService _leagueService = injected<LeagueService>();
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<Iterable<League>>(
-      stream: _leagueService!.leagues(),
+      stream: _leagueService.leagues(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
@@ -40,7 +42,10 @@ class LeagueList extends StatelessWidget {
                 (league) => Card(
                   child: ListTile(
                     leading: FlutterLogo(),
-                    title: Text(league.name),
+                    title: Text('Join ${league.name}'),
+                    onTap: () => Beamer.of(context).beamTo(
+                      LeaguesLocation.league(leagueId: league.id),
+                    ),
                   ),
                 ),
               )

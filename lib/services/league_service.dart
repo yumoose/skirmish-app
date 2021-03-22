@@ -18,4 +18,13 @@ class LeagueService {
       });
     });
   }
+
+  Stream<League> league({required String leagueId}) {
+    return firestore.collection('leagues').doc(leagueId).snapshots().map(
+          (leagueDocument) => League.fromSnapshot(
+            id: leagueDocument.id,
+            snapshot: leagueDocument.data()!,
+          ),
+        );
+  }
 }

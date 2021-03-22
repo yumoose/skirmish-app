@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:get_it/get_it.dart';
+import 'package:skirmish/exceptions/auth_exception.dart';
 import 'package:skirmish/exceptions/membership_exception.dart';
 import 'package:skirmish/models/membership.dart';
 import 'package:skirmish/services/auth_service.dart';
+import 'package:skirmish/utils/cloud_functions.dart';
 
 class MembershipService {
   final _injected = GetIt.instance;
@@ -32,10 +35,30 @@ class MembershipService {
     });
   }
 
-  Future<Membership> joinLeague({required String leagueId}) async {
-    await _assertNotAlreadyInLeague(leagueId: leagueId);
+  static final _joinLeagueFunction =
+      cloudFunctions.httpsCallable('memberships-joinLeague');
 
-    // return _membershipsCollection.add()
+  Future<void> joinLeague({required String leagueId}) async {
+    try {
+      await _authService.assertLoggedIn();
+      await _assertNotAlreadyInLeague(leagueId: leagueId);
+
+      await _joinLeagueFunction.call({
+        'playerId': _authService.currentUser?.uid,
+        'leagueId': leagueId,
+      });
+    } on MustBeLoggedInException catch (_) {
+      throw MembershipException('You must be logged in to join leagues.');
+    } on FirebaseFunctionsException catch (ex) {
+      if (ex.code == 'already-exists') {
+        throw MembershipException("You're already a member of this league.");
+      } else {
+        // Swallow up all other exceptions, while known, into a generalised statement for the user
+        throw MembershipException(
+          'Something went wrong trying to join the league. Please try again later.',
+        );
+      }
+    }
   }
 
   Future<void> _assertNotAlreadyInLeague({required String leagueId}) async {
@@ -52,7 +75,7 @@ class MembershipService {
         .get();
 
     if (existingMembership.size > 0) {
-      throw MembershipException('Already in league');
+      throw MembershipException("You're already a member of this league.");
     }
   }
 }
