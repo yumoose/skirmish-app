@@ -1,25 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 
-class Player {
-  final String? id;
-  final String? name;
-  final String? tag;
+class Player extends Equatable {
+  final String id;
+  final String name;
+  final String tag;
 
-  Player({
-    this.id,
-    this.name,
-    this.tag,
-  });
+  @override
+  List<Object> get props => [id, name, tag];
 
-  String? get userId => id;
-
-  static Player fromDocumentSnapshot(DocumentSnapshot documentSnapshot) {
-    final documentData = documentSnapshot.data()!;
-
-    return Player(
-      id: documentSnapshot.id,
-      name: documentData['name'] as String?,
-      tag: documentData['tag'] as String?,
-    );
-  }
+  Player.fromSnapshot({
+    required String id,
+    required Map<String, dynamic> snapshot,
+  })   : id = id,
+        name = snapshot['name'] as String,
+        tag = snapshot['tag'] as String;
 }

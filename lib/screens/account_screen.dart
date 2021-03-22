@@ -43,7 +43,7 @@ class AccountScreen extends StatelessWidget {
         Column(
           children: [
             Text(
-              player.name ?? 'Name not set',
+              player.name,
               style: TextStyle(fontSize: 20),
             ),
             SizedBox(height: 48),

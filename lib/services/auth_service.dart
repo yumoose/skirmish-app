@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:skirmish/exceptions/auth_exception.dart';
 import 'package:skirmish/models/player.dart';
 
 class AuthService {
@@ -69,7 +70,10 @@ class AuthService {
     final playerRef = _firestore.collection('players').doc(id);
     final updatedPlayerDoc = await playerRef.get();
 
-    return Player.fromDocumentSnapshot(updatedPlayerDoc);
+    return Player.fromSnapshot(
+      id: updatedPlayerDoc.id,
+      snapshot: updatedPlayerDoc.data()!,
+    );
   }
 
   Future<Player> _createSkirmishUserProfile({
@@ -85,5 +89,9 @@ class AuthService {
     }, SetOptions(merge: true));
 
     return _fetchPlayer(id: user.uid);
+  }
+
+  Future assertLoggedIn() async {
+    if (!isLoggedIn) throw MustBeLoggedInException();
   }
 }

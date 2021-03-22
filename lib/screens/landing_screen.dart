@@ -22,7 +22,9 @@ class LandingScreen extends StatelessWidget {
       ),
       body: Center(
         child: ElevatedButton(
-          onPressed: () => Beamer.of(context).beamTo(LeaguesLocation()),
+          onPressed: () => Beamer.of(context).beamTo(
+            LeaguesLocation.leagues(),
+          ),
           child: Text('View Leagues'),
         ),
       ),
@@ -32,7 +34,10 @@ class LandingScreen extends StatelessWidget {
   Widget leagueList(BuildContext context) {
     return StreamBuilder(
       stream: _leagueService!.leagues(),
-      builder: (BuildContext context, AsyncSnapshot<List<League>> snapshot) {
+      builder: (
+        BuildContext context,
+        AsyncSnapshot<Iterable<League>> snapshot,
+      ) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();
         } else if (snapshot.hasError) {
@@ -42,7 +47,7 @@ class LandingScreen extends StatelessWidget {
         final leagues = snapshot.data!;
 
         return Column(
-          children: leagues.map((league) => Text(league.name!)).toList(),
+          children: leagues.map((league) => Text(league.name)).toList(),
         );
       },
     );
