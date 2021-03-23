@@ -14,4 +14,7 @@ flutter analyze
 
 # Run tests
 flutter test
+
+## To update golden snapshots
+flutter test --update-goldens
 ```
