@@ -38,8 +38,10 @@ class _LeagueScreenState extends State<LeagueScreen> {
 
             final league = snapshot.data!;
             return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(league.name),
+                SizedBox(height: 48),
                 ElevatedButton(
                   onPressed: _joinLeague,
                   child: Text('Join league'),
