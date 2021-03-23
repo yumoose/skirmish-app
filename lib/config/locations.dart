@@ -91,7 +91,10 @@ class LeaguesLocation extends BeamLocation {
 
   LeaguesLocation.league({
     required String leagueId,
-  }) : super(pathBlueprint: '/leagues/$leagueId');
+  }) : super(
+          pathBlueprint: '/leagues/:leagueId',
+          pathParameters: {'leagueId': leagueId},
+        );
 
   @override
   List<String> get pathBlueprints => [

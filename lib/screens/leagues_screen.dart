@@ -42,7 +42,7 @@ class LeagueList extends StatelessWidget {
                 (league) => Card(
                   child: ListTile(
                     leading: FlutterLogo(),
-                    title: Text('Join ${league.name}'),
+                    title: Text('${league.name}'),
                     onTap: () => Beamer.of(context).beamTo(
                       LeaguesLocation.league(leagueId: league.id),
                     ),
