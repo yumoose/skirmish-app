@@ -7,6 +7,11 @@ import 'package:skirmish/models/membership.dart';
 import 'package:skirmish/services/auth_service.dart';
 import 'package:skirmish/utils/cloud_functions.dart';
 
+enum MembershipAction {
+  join,
+  leave,
+}
+
 class MembershipService {
   final _injected = GetIt.instance;
 
@@ -35,10 +40,61 @@ class MembershipService {
     });
   }
 
+  Stream<Iterable<Membership>> leagueMemberships({
+    required String leagueId,
+  }) {
+    return _firestore
+        .collection('memberships')
+        .where('league_id', isEqualTo: leagueId)
+        .snapshots()
+        .asyncMap(
+          (snapshot) => snapshot.docs.map(
+            (membershipDoc) => Membership.fromSnapshot(
+              id: membershipDoc.id,
+              snapshot: membershipDoc.data()!,
+            ),
+          ),
+        );
+  }
+
+  Stream<bool> isMemberOfLeague({required String leagueId}) {
+    final currentPlayerId = _authService.currentUser?.uid;
+
+    if (currentPlayerId == null) {
+      return Stream.value(false);
+    }
+
+    return _firestore
+        .collection('memberships')
+        .where('player_id', isEqualTo: _authService.currentUser?.uid)
+        .where('league_id', isEqualTo: leagueId)
+        .limit(1)
+        .snapshots()
+        .asyncMap((snapshot) => snapshot.docs.isNotEmpty);
+  }
+
+  Future<void> updateMembership({
+    required String leagueId,
+    required MembershipAction action,
+  }) async {
+    switch (action) {
+      case MembershipAction.join:
+        await _joinLeague(leagueId: leagueId);
+        break;
+      // case MembershipAction.leave:
+      //   await _leaveLeague(leagueId: leagueId);
+      //   break;
+      default:
+        throw MembershipException(
+          'Unable to $action leagues at this time, but it will be available shortly!',
+        );
+    }
+  }
+
   static final _joinLeagueFunction =
       cloudFunctions.httpsCallable('memberships-joinLeague');
 
-  Future<void> joinLeague({required String leagueId}) async {
+  Future<void> _joinLeague({required String leagueId}) async {
     try {
       await _authService.assertLoggedIn();
       await _assertNotAlreadyInLeague(leagueId: leagueId);
