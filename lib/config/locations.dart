@@ -22,7 +22,7 @@ abstract class Locations {
 }
 
 class LandingLocation extends BeamLocation {
-  LandingLocation() : super(pathBlueprint: '/');
+  LandingLocation() : super(state: BeamState(pathBlueprintSegments: ['/']));
 
   @override
   List<String> get pathBlueprints => ['/'];
@@ -37,10 +37,8 @@ class LandingLocation extends BeamLocation {
 }
 
 class AuthLocation extends BeamLocation {
-  AuthLocation({String? pathBlueprint = '/auth'})
-      : super(
-          pathBlueprint: pathBlueprint,
-        );
+  AuthLocation({BeamState? state})
+      : super(state: state ?? BeamState(pathBlueprintSegments: ['auth']));
 
   @override
   List<String> get pathBlueprints => [
@@ -51,12 +49,12 @@ class AuthLocation extends BeamLocation {
   @override
   List<BeamPage> pagesBuilder(BuildContext context) => [
         ...LandingLocation().pagesBuilder(context),
-        if (pathSegments.contains('auth'))
+        if (state.pathBlueprintSegments.contains('auth'))
           BeamPage(
             key: ValueKey('auth'),
             child: SignInScreen(),
           ),
-        if (pathSegments.contains('password_reset'))
+        if (state.pathBlueprintSegments.contains('password_reset'))
           BeamPage(
             key: ValueKey('password-reset'),
             child: PasswordResetScreen(),
@@ -65,11 +63,15 @@ class AuthLocation extends BeamLocation {
 }
 
 class PasswordResetLocation extends AuthLocation {
-  PasswordResetLocation() : super(pathBlueprint: '/auth/password_reset');
+  PasswordResetLocation()
+      : super(
+            state:
+                BeamState(pathBlueprintSegments: ['auth', 'password_reset']));
 }
 
 class AccountLocation extends BeamLocation {
-  AccountLocation() : super(pathBlueprint: '/account');
+  AccountLocation()
+      : super(state: BeamState(pathBlueprintSegments: ['account']));
 
   @override
   List<String> get pathBlueprints => ['/account/'];
@@ -77,7 +79,7 @@ class AccountLocation extends BeamLocation {
   @override
   List<BeamPage> pagesBuilder(BuildContext context) => [
         ...LandingLocation().pagesBuilder(context),
-        if (pathSegments.contains('account'))
+        if (state.pathBlueprintSegments.contains('account'))
           BeamPage(
             key: ValueKey('account'),
             child: AccountScreen(),
@@ -86,14 +88,27 @@ class AccountLocation extends BeamLocation {
 }
 
 class LeaguesLocation extends BeamLocation {
-  LeaguesLocation() : super(pathBlueprint: '/leagues');
-  LeaguesLocation.leagues() : super(pathBlueprint: '/leagues');
+  LeaguesLocation()
+      : super(
+          state: BeamState(
+            pathBlueprintSegments: ['leagues'],
+          ),
+        );
+
+  LeaguesLocation.leagues()
+      : super(
+          state: BeamState(
+            pathBlueprintSegments: ['leagues'],
+          ),
+        );
 
   LeaguesLocation.league({
     required String leagueId,
   }) : super(
-          pathBlueprint: '/leagues/:leagueId',
-          pathParameters: {'leagueId': leagueId},
+          state: BeamState(
+            pathBlueprintSegments: ['leagues', ':leagueId'],
+            pathParameters: {'leagueId': leagueId},
+          ),
         );
 
   @override
@@ -104,15 +119,15 @@ class LeaguesLocation extends BeamLocation {
   @override
   List<BeamPage> pagesBuilder(BuildContext context) => [
         ...LandingLocation().pagesBuilder(context),
-        if (pathSegments.contains('leagues'))
+        if (state.pathBlueprintSegments.contains('leagues'))
           BeamPage(
             key: ValueKey('leagues'),
             child: LeaguesScreen(),
           ),
-        if (pathParameters.containsKey('leagueId'))
+        if (state.pathParameters.containsKey('leagueId'))
           BeamPage(
             key: ValueKey('league'),
-            child: LeagueScreen(leagueId: pathParameters['leagueId']!),
+            child: LeagueScreen(leagueId: state.pathParameters['leagueId']!),
           ),
       ];
 }
