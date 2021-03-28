@@ -166,8 +166,10 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           key: Key('password_reset_button'),
           onPressed: _isLoading
               ? null
-              : () async => Beamer.of(context).updateCurrentLocation(
-                    pathBlueprint: '/auth/password_reset',
+              : () async => Beamer.of(context).currentLocation.update(
+                    (state) => state.copyWith(
+                      pathBlueprintSegments: ['auth', 'password_reset'],
+                    ),
                   ),
           child: Text(
             'Forgot your password?',

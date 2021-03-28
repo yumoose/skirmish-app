@@ -27,7 +27,7 @@ dependencies:
   universal_platform: ^1.0.0-nullsafety
   dartz: ^0.10.0-nullsafety.1
 
-  beamer: ^1.0.0-nullsafety.3
+  beamer: ^1.0.0-nullsafety.9
   get_it: ^6.0.0
 
   firebase_core: ^1.0.1

@@ -75,8 +75,10 @@ class _PasswordResetFormState extends State<PasswordResetForm> {
       TextButton(
         onPressed: _isLoading
             ? null
-            : () => Beamer.of(context).updateCurrentLocation(
-                  pathBlueprint: '/auth',
+            : () => Beamer.of(context).currentLocation.update(
+                  (state) => state.copyWith(
+                    pathBlueprintSegments: ['/auth'],
+                  ),
                 ),
         child: Text(
           'Cancel',
