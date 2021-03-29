@@ -18,6 +18,10 @@ class LeagueMembershipListView extends StatelessWidget {
     return StreamBuilder<Iterable<Membership>>(
         stream: _membershipService.leagueMemberships(leagueId: leagueId),
         builder: (context, asyncSnapshot) {
+          if (asyncSnapshot.hasError) {
+            debugPrint(asyncSnapshot.error.toString());
+          }
+
           final listItems = asyncSnapshot.data?.map<ListTile>(
                 (membership) => MembershipTile(membership: membership),
               ) ??

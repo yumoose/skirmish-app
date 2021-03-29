@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import * as admin from "firebase-admin";
 
-type League = {
+export type League = {
   id: string,
   name: string,
   // eslint-disable-next-line camelcase

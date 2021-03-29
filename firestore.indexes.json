@@ -1,4 +1,37 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "leagues",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "league_id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expired_at",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "memberships",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "league_id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "player_id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expired_at",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

@@ -1,13 +1,17 @@
+import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:skirmish/config/locations.dart';
 import 'package:skirmish/exceptions/membership_exception.dart';
 import 'package:skirmish/models/league.dart';
+import 'package:skirmish/services/auth_service.dart';
 import 'package:skirmish/services/league_service.dart';
 import 'package:skirmish/services/membership_service.dart';
 import 'package:skirmish/utils/dependency_injection.dart';
 import 'package:skirmish/widgets/memberships/league_membership_list_view.dart';
 
-final LeagueService _leagueService = injected<LeagueService>();
-final MembershipService _membershipService = injected<MembershipService>();
+final _leagueService = injected<LeagueService>();
+final _membershipService = injected<MembershipService>();
+final _authService = injected<AuthService>();
 
 class LeagueScreen extends StatefulWidget {
   final String leagueId;
@@ -85,8 +89,19 @@ class LeagueMembershipAction extends StatelessWidget {
         leagueId: leagueId,
       ),
       builder: (context, asyncSnapshot) {
+        if (!_authService.isLoggedIn) {
+          return TextButton(
+            onPressed: () => Beamer.of(context).beamTo(AuthLocation()),
+            style: TextButton.styleFrom(primary: Colors.white),
+            child: Text('Join'),
+          );
+        }
+
         if (asyncSnapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator.adaptive();
+          return TextButton(
+            onPressed: null,
+            child: CircularProgressIndicator.adaptive(),
+          );
         }
 
         return asyncSnapshot.data == true
@@ -124,7 +139,9 @@ class LeagueMembershipAction extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
           title: Text('Successfully updated membership'),
-          content: Text('Time to jump in and start logging your victories!'),
+          content: action == MembershipAction.join
+              ? Text('Time to jump in and start logging your victories!')
+              : Text("We're sad to see you go. Come back any time!"),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),

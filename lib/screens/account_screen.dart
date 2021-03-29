@@ -42,9 +42,16 @@ class AccountScreen extends StatelessWidget {
       children: [
         Column(
           children: [
+            Text('Signed in as'),
+            SizedBox(height: 24),
+            Text(
+              player.tag,
+              style: TextStyle(fontSize: 24),
+            ),
+            SizedBox(height: 8),
             Text(
               player.name,
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 48),
             TextButton(
