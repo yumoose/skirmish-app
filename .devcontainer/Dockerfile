@@ -1,36 +1,30 @@
 FROM ubuntu:18.04
 
+RUN apt update && apt install -y curl git unzip xz-utils zip wget gnupg lsb-release libglu1-mesa openjdk-8-jdk vim apt-transport-https ca-certificates
+
+# Add docker repo
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+RUN echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
 # Prerequisites
-RUN apt update && apt install -y curl git unzip xz-utils zip libglu1-mesa openjdk-8-jdk wget
+RUN apt update && apt install -y sudo docker-ce docker-ce-cli containerd.io
+
+# Install Docker compose
+RUN curl -L "https://github.com/docker/compose/releases/download/1.28.6/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+RUN chmod +x /usr/local/bin/docker-compose
 
 # Setup Node.js and npm
 RUN curl -fsSL https://deb.nodesource.com/setup_12.x | bash - \
   && apt install -y nodejs \
   && curl -L https://www.npmjs.com/install.sh | sh
-# Setup Firebase tools
-RUN npm install -g firebase-tools
 
-# Setup optional developer tools
-RUN apt install -y vim
-
-# Setup new user
-RUN useradd -ms /bin/bash developer
-USER developer
-WORKDIR /home/developer
-
-# Prepare Android directories and system variables
-RUN mkdir -p Android/Sdk
-ENV ANDROID_SDK_ROOT /home/developer/Android/Sdk
-RUN mkdir -p .android && touch .android/repositories.cfg
-# Setup Android SDK
-RUN wget -O sdk-tools.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
-RUN unzip sdk-tools.zip && rm sdk-tools.zip
-RUN mv tools Android/Sdk/tools
-RUN cd Android/Sdk/tools/bin && yes | ./sdkmanager --licenses
-RUN cd Android/Sdk/tools/bin && ./sdkmanager "build-tools;29.0.2" "patcher;v4" "platform-tools" "platforms;android-29" "sources;android-29"
+# Setup Node tools
+RUN npm install -g firebase-tools supabase
 
 # Download Flutter SDK
 RUN git clone https://github.com/flutter/flutter.git -b stable
-ENV PATH "$PATH:/home/developer/flutter/bin"
+ENV PATH "$PATH:$PWD/flutter/bin"
 # Run basic check to download Dark SDK
 RUN flutter doctor

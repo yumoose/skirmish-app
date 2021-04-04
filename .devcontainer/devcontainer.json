@@ -2,7 +2,7 @@
   "name": "Flutter",
   "context": "..",
   "dockerFile": "./Dockerfile",
-  "remoteUser": "developer",
+  // "remoteUser": "developer",
   // "mounts": [
   //  "source=/dev/bus/usb,target=/dev/bus/usb,type=bind"
   // ],
@@ -15,7 +15,7 @@
     "dbaeumer.vscode-eslint",
     "toba.vsfire"
   ],
-  "workspaceMount": "source=${localWorkspaceFolder}/workspace,target=/home/developer/workspace,type=bind,consistency=delegated",
-  "workspaceFolder": "/home/developer/workspace",
+  // "workspaceMount": "source=${localWorkspaceFolder}/workspace,target=/home/developer/workspace,type=bind,consistency=delegated",
+  // "workspaceFolder": "/home/developer/workspace",
   "postCreateCommand": "./setup.sh"
  }
