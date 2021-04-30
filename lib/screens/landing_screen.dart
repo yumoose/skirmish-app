@@ -1,15 +1,15 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:skirmish/config/locations.dart';
 import 'package:skirmish/models/league.dart';
 import 'package:skirmish/models/player.dart';
-import 'package:skirmish/services/auth_service.dart';
 import 'package:skirmish/services/league_service.dart';
+import 'package:skirmish/services/player_service.dart';
+import 'package:skirmish/utils/dependency_injection.dart';
 
 class LandingScreen extends StatelessWidget {
-  final AuthService? _authService = GetIt.instance<AuthService>();
-  final LeagueService? _leagueService = GetIt.instance<LeagueService>();
+  final _playerService = injected<PlayerService>();
+  final _leagueService = injected<LeagueService>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +32,8 @@ class LandingScreen extends StatelessWidget {
   }
 
   Widget leagueList(BuildContext context) {
-    return StreamBuilder(
-      stream: _leagueService!.leagues(),
+    return FutureBuilder(
+      future: _leagueService.leagues(),
       builder: (
         BuildContext context,
         AsyncSnapshot<Iterable<League>> snapshot,
@@ -55,7 +55,7 @@ class LandingScreen extends StatelessWidget {
 
   Widget _accountAction() {
     return StreamBuilder<Player?>(
-      stream: _authService!.currentPlayer,
+      stream: _playerService.playerStream,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return IconButton(

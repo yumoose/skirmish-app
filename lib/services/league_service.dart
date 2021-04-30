@@ -1,30 +1,47 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:skirmish/exceptions/league_exception.dart';
 import 'package:skirmish/models/league.dart';
+import 'package:skirmish/utils/supabase.dart';
+import 'package:supabase/supabase.dart';
 
 class LeagueService {
-  late FirebaseFirestore _firestore;
+  late SupabaseClient _supabase;
 
-  LeagueService({FirebaseFirestore? firestore}) {
-    _firestore = firestore ?? FirebaseFirestore.instance;
+  LeagueService({SupabaseClient? supabase}) {
+    _supabase = supabase ?? Supabase.client;
   }
 
-  Stream<Iterable<League>> leagues() {
-    return _firestore.collection('leagues').snapshots().map((leagues) {
-      return leagues.docs.map((leagueDocument) {
-        return League.fromSnapshot(
-          id: leagueDocument.id,
-          snapshot: leagueDocument.data()!,
-        );
-      });
-    });
+  Future<Iterable<League>> leagues() async {
+    final leaguesResponse =
+        await _supabase.from('leagues').select().order('created_at').execute();
+
+    if (leaguesResponse.error != null) {
+      throw LeagueException('Failed to fetch leagues. Please try again later.');
+    }
+
+    final leaguesData = leaguesResponse.data as List;
+    final leagues = leaguesData.map(
+      (leagueData) => League.fromSupabase(leagueData),
+    );
+
+    return leagues;
   }
 
-  Stream<League> league({required String leagueId}) {
-    return _firestore.collection('leagues').doc(leagueId).snapshots().map(
-          (leagueDocument) => League.fromSnapshot(
-            id: leagueDocument.id,
-            snapshot: leagueDocument.data()!,
-          ),
-        );
+  Future<League> league({required String leagueId}) async {
+    final leaguesResponse = await _supabase
+        .from('leagues')
+        .select()
+        .eq('id', leagueId)
+        .single()
+        .execute();
+
+    if (leaguesResponse.error != null) {
+      throw LeagueException(
+          'Failed to fetch league ($leagueId). Please try again later.');
+    }
+
+    final leagueData = leaguesResponse.data;
+    final league = League.fromSupabase(leagueData);
+
+    return league;
   }
 }

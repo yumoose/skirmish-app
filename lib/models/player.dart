@@ -8,10 +8,8 @@ class Player extends Equatable {
   @override
   List<Object> get props => [id, name, tag];
 
-  Player.fromSnapshot({
-    required String id,
-    required Map<String, dynamic> snapshot,
-  })   : id = id,
-        name = snapshot['name'] as String,
-        tag = snapshot['tag'] as String;
+  Player.fromSupabase(playerData)
+      : id = playerData['id'] as String,
+        name = playerData['name'] as String,
+        tag = playerData['tag'] as String;
 }

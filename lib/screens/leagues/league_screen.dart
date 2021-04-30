@@ -28,7 +28,7 @@ class _LeagueScreenState extends State<LeagueScreen> {
 
   @override
   void initState() {
-    _leagueService.league(leagueId: widget.leagueId).listen((league) {
+    _leagueService.league(leagueId: widget.leagueId).then((league) {
       setState(() {
         _league = league;
         _isLeagueLoading = false;
@@ -48,27 +48,16 @@ class _LeagueScreenState extends State<LeagueScreen> {
         ],
       ),
       body: Center(
-        child: StreamBuilder<League>(
-          stream: _leagueService.league(leagueId: widget.leagueId),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-
-            if (snapshot.hasError) {
-              return Text('Error loading league details');
-            }
-
-            final league = snapshot.data!;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(child: LeagueMembershipListView(leagueId: league.id)),
-                SizedBox(height: 48),
-              ],
-            );
-          },
-        ),
+        child: _isLeagueLoading
+            ? CircularProgressIndicator()
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: LeagueMembershipListView(leagueId: _league.id)),
+                  SizedBox(height: 48),
+                ],
+              ),
       ),
     );
   }

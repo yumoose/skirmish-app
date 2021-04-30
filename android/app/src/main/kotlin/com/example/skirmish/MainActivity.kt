@@ -1,4 +1,4 @@
-package com.example.skirmish
+package online.skirmish.tournaments
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "540427763306",
+    "project_id": "skirmish-uat",
+    "storage_bucket": "skirmish-uat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540427763306:android:92f442198f171bf6941413",
+        "android_client_info": {
+          "package_name": "online.skirmish.tournaments"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "540427763306-dqgmibdkt4tt3l3pdnhfbjp4aseqajlb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAcOtTjrPJ-jc_ac-mF7_rHg_B3-a_73sU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "540427763306-dqgmibdkt4tt3l3pdnhfbjp4aseqajlb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:skirmish/models/player.dart';
 import 'package:skirmish/services/auth_service.dart';
+import 'package:skirmish/services/player_service.dart';
+import 'package:skirmish/utils/dependency_injection.dart';
 import 'package:skirmish/widgets/dialogs/platform_alert_dialog.dart';
 
 class AccountScreen extends StatelessWidget {
-  final AuthService? _authService = GetIt.instance<AuthService>();
+  final _authService = injected<AuthService>();
+  final _playerService = injected<PlayerService>();
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +15,9 @@ class AccountScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Account'),
       ),
-      body: StreamBuilder(
-        stream: _authService!.currentPlayer,
-        builder: (BuildContext context, AsyncSnapshot<Player?> snapshot) {
+      body: StreamBuilder<Player?>(
+        stream: _playerService.playerStream,
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: CircularProgressIndicator(),
@@ -93,7 +95,7 @@ class AccountScreen extends StatelessWidget {
                 final navigator = Navigator.of(context);
 
                 navigator.pop();
-                await _authService!.signOut();
+                await _authService.signOut();
 
                 if (navigator.canPop()) {
                   navigator.pop();

@@ -316,7 +316,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
     try {
       if (_formType == EmailSignInFormType.signIn) {
-        await _authService!.signInWithEmailAndPassword(
+        await _authService!.signIn(
           _email,
           _password,
         );
@@ -325,7 +325,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
       } else if (_formType == EmailSignInFormType.register) {
         final auth = _authService!;
 
-        await auth.createUserWithEmailAndPassword(
+        await auth.register(
           email: _email,
           password: _password,
           name: _userName,

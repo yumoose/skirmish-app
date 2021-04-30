@@ -30,59 +30,62 @@ class MembershipService {
       _firestore.collection('memberships');
 
   Stream<Iterable<Membership>> memberships() {
-    return _membershipsCollection.snapshots().map((membershipsQuery) {
-      return membershipsQuery.docs.map(
-        (membershipDocument) => Membership.fromSnapshot(
-          id: membershipDocument.id,
-          snapshot: membershipDocument.data()!,
-        ),
-      );
-    });
+    return Stream.value([]);
+    // return _membershipsCollection.snapshots().map((membershipsQuery) {
+    //   return membershipsQuery.docs.map(
+    //     (membershipDocument) => Membership.fromSnapshot(
+    //       id: membershipDocument.id,
+    //       snapshot: membershipDocument.data()!,
+    //     ),
+    //   );
+    // });
   }
 
   Stream<Iterable<Membership>> leagueMemberships({
     required String leagueId,
   }) {
-    return _firestore
-        .collection('memberships')
-        .where('league_id', isEqualTo: leagueId)
-        .where('expired_at', isNull: true)
-        .snapshots()
-        .asyncMap(
-          (snapshot) => snapshot.docs.map(
-            (membershipDoc) => Membership.fromSnapshot(
-              id: membershipDoc.id,
-              snapshot: membershipDoc.data()!,
-            ),
-          ),
-        );
+    return Stream.value([]);
+    // return _firestore
+    //     .collection('memberships')
+    //     .where('league_id', isEqualTo: leagueId)
+    //     .where('expired_at', isNull: true)
+    //     .snapshots()
+    //     .asyncMap(
+    //       (snapshot) => snapshot.docs.map(
+    //         (membershipDoc) => Membership.fromSnapshot(
+    //           id: membershipDoc.id,
+    //           snapshot: membershipDoc.data()!,
+    //         ),
+    //       ),
+    //     );
   }
 
   Stream<bool> isMemberOfLeague({required String leagueId}) {
-    final currentPlayerId = _authService.currentUser?.uid;
+    return Stream.value(false);
+    // final currentPlayerId = _authService.currentUser?.uid;
 
-    if (currentPlayerId == null) {
-      return Stream.value(false);
-    }
+    // if (currentPlayerId == null) {
+    //   return Stream.value(false);
+    // }
 
-    return _firestore
-        .collection('memberships')
-        .where('player_id', isEqualTo: _authService.currentUser?.uid)
-        .where('league_id', isEqualTo: leagueId)
-        .where('expired_at', isNull: true)
-        .limit(1)
-        .snapshots()
-        .asyncMap((snapshot) {
-      if (snapshot.docs.isEmpty) {
-        return false;
-      } else {
-        final membershipDoc = snapshot.docs.first;
-        return Membership.fromSnapshot(
-          id: membershipDoc.id,
-          snapshot: membershipDoc.data()!,
-        ).isActive;
-      }
-    });
+    // return _firestore
+    //     .collection('memberships')
+    //     .where('player_id', isEqualTo: _authService.currentUser?.uid)
+    //     .where('league_id', isEqualTo: leagueId)
+    //     .where('expired_at', isNull: true)
+    //     .limit(1)
+    //     .snapshots()
+    //     .asyncMap((snapshot) {
+    //   if (snapshot.docs.isEmpty) {
+    //     return false;
+    //   } else {
+    //     final membershipDoc = snapshot.docs.first;
+    //     return Membership.fromSnapshot(
+    //       id: membershipDoc.id,
+    //       snapshot: membershipDoc.data()!,
+    //     ).isActive;
+    //   }
+    // });
   }
 
   Future<void> updateMembership({
@@ -104,33 +107,33 @@ class MembershipService {
   }
 
   Future<void> _assertNotAlreadyInLeague({required String leagueId}) async {
-    final currentUserId = _authService.currentUser?.uid;
+    // final currentUserId = _authService.currentUser?.id;
 
-    if (currentUserId == null) {
-      return;
-    }
+    // if (currentUserId == null) {
+    //   return;
+    // }
 
-    final existingMembership = await _membershipsCollection
-        .where('league_id', isEqualTo: leagueId)
-        .where('player_id', isEqualTo: _authService.currentUser?.uid)
-        .limit(1)
-        .get();
+    // final existingMembership = await _membershipsCollection
+    //     .where('league_id', isEqualTo: leagueId)
+    //     .where('player_id', isEqualTo: _authService.currentUser?.id)
+    //     .limit(1)
+    //     .get();
 
-    if (existingMembership.docs.isNotEmpty) {
-      final membershipDoc = existingMembership.docs.first;
-      final membership = Membership.fromSnapshot(
-        id: membershipDoc.id,
-        snapshot: membershipDoc.data()!,
-      );
+    // if (existingMembership.docs.isNotEmpty) {
+    //   final membershipDoc = existingMembership.docs.first;
+    //   final membership = Membership.fromSnapshot(
+    //     id: membershipDoc.id,
+    //     snapshot: membershipDoc.data()!,
+    //   );
 
-      if (membership.isActive) {
-        throw MembershipException("You're already a member of this league.");
-      }
-    }
+    //   if (membership.isActive) {
+    //     throw MembershipException("You're already a member of this league.");
+    //   }
+    // }
   }
 
   Future<void> _assertMemberOfLeague({required String leagueId}) async {
-    final currentUserId = _authService.currentUser?.uid;
+    final currentUserId = _authService.currentUser?.id;
 
     if (currentUserId == null) {
       return;
@@ -138,7 +141,7 @@ class MembershipService {
 
     final existingMembership = await _membershipsCollection
         .where('league_id', isEqualTo: leagueId)
-        .where('player_id', isEqualTo: _authService.currentUser?.uid)
+        .where('player_id', isEqualTo: _authService.currentUser?.id)
         .limit(1)
         .get();
 
@@ -156,7 +159,7 @@ class MembershipService {
       await _assertNotAlreadyInLeague(leagueId: leagueId);
 
       await _joinLeagueFunction.call({
-        'playerId': _authService.currentUser?.uid,
+        'playerId': _authService.currentUser?.id,
         'leagueId': leagueId,
       });
     } on MustBeLoggedInException catch (_) {
@@ -182,7 +185,7 @@ class MembershipService {
       await _assertMemberOfLeague(leagueId: leagueId);
 
       await _leaveLeagueFunction.call({
-        'playerId': _authService.currentUser?.uid,
+        'playerId': _authService.currentUser?.id,
         'leagueId': leagueId,
       });
     } on MustBeLoggedInException catch (_) {

@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:skirmish/models/player.dart';
 import 'package:skirmish/models/league.dart';
@@ -13,20 +12,12 @@ class Membership extends Equatable {
   @override
   List<Object> get props => [id, league, player];
 
-  Membership.fromSnapshot({
-    required String id,
-    required Map<String, dynamic> snapshot,
-  })   : id = id,
-        rating = snapshot['rating'] as int,
-        expiredAt = (snapshot['expired_at'] as Timestamp?)?.toDate(),
-        player = Player.fromSnapshot(
-          id: snapshot['player_id'] as String,
-          snapshot: snapshot['player_snapshot'] as Map<String, dynamic>,
-        ),
-        league = League.fromSnapshot(
-          id: snapshot['league_id'] as String,
-          snapshot: snapshot['league_snapshot'] as Map<String, dynamic>,
-        );
+  Membership.fromSupabase(membershipData)
+      : id = membershipData['id'] as String,
+        player = Player.fromSupabase(membershipData['player']),
+        league = League.fromSupabase(membershipData['league']),
+        expiredAt = membershipData['expired_at'] as DateTime?,
+        rating = membershipData['rating'] as int;
 
   bool get isExpired =>
       expiredAt != null &&

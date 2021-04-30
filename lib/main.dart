@@ -2,11 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'app.dart';
+import 'config/environment.dart';
 import 'config/service_configuration.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Environment.loadEnvironment();
   ServiceConfiguration.registerServices();
 
   runApp(MyApp());

@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.skirmish">
+    package="online.skirmish.tournaments">
    <application
         android:label="skirmish"
         android:icon="@mipmap/ic_launcher">

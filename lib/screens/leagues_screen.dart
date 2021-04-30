@@ -24,8 +24,8 @@ class LeagueList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Iterable<League>>(
-      stream: _leagueService.leagues(),
+    return FutureBuilder<Iterable<League>>(
+      future: _leagueService.leagues(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator();

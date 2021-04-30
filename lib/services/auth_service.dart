@@ -1,94 +1,86 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
 import 'package:skirmish/exceptions/auth_exception.dart';
-import 'package:skirmish/models/player.dart';
+import 'package:skirmish/utils/supabase.dart';
+import 'package:supabase/supabase.dart';
 
 class AuthService {
-  late FirebaseAuth _firebaseAuth;
-  late FirebaseFirestore _firestore;
+  final SupabaseClient _supabase;
 
-  AuthService({
-    FirebaseAuth? firebaseAuth,
-    FirebaseFirestore? firestore,
-  }) {
-    _firebaseAuth = firebaseAuth ?? FirebaseAuth.instance;
-    _firestore = firestore ?? FirebaseFirestore.instance;
-  }
+  AuthService() : _supabase = Supabase.client;
 
-  Stream<Player?> get currentPlayer {
-    return _firebaseAuth.userChanges().asyncMap(
-          (user) async => user != null
-              ? await _fetchPlayer(
-                  id: user.uid,
-                )
-              : null,
-        );
-  }
-
-  User? get currentUser => _firebaseAuth.currentUser;
+  User? get currentUser => _supabase.auth.user();
   bool get isLoggedIn => currentUser != null;
 
-  Future<User?> signInWithEmailAndPassword(
-      String email, String password) async {
-    final userCredential = await _firebaseAuth.signInWithEmailAndPassword(
+  Stream<User?> get userStream {
+    late StreamController<User?> controller;
+    var active = true;
+
+    void update(User? user) {
+      controller.add(user);
+      if (!active) {
+        controller.close();
+      }
+    }
+
+    void start() {
+      _supabase.auth.onAuthStateChange((event, session) {
+        if (active) {
+          update(session?.user);
+        }
+      });
+    }
+
+    void stop() {
+      active = false;
+    }
+
+    controller = StreamController<User>(
+        onListen: start, onPause: stop, onResume: start, onCancel: stop);
+
+    return controller.stream;
+  }
+
+  Future<User> signIn(
+    String email,
+    String password,
+  ) async {
+    final sessionResponse = await _supabase.auth.signIn(
       email: email,
       password: password,
     );
 
-    return userCredential.user;
+    if (sessionResponse.error != null) {
+      throw AuthException(sessionResponse.error!.message);
+    }
+
+    return sessionResponse.user!;
   }
 
-  Future<Player> createUserWithEmailAndPassword({
+  Future<User> register({
     required String email,
     required String password,
     String? name,
     String? tag,
   }) async {
-    final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+    final sessionResponse = await _supabase.auth.signUp(email, password);
 
-    final player = await _createSkirmishUserProfile(
-      user: userCredential.user!,
-      name: name,
-      tag: tag,
-    );
+    if (sessionResponse.error != null) {
+      throw AuthException(sessionResponse.error!.message);
+    }
 
-    return player;
+    // TODO: Create user/player in the database - split out profile service?
+
+    return sessionResponse.user!;
   }
 
   Future resetPassword({required String email}) async {
-    await _firebaseAuth.sendPasswordResetEmail(email: email);
+    // TODO: Configure password reset in the app itself
+    await _supabase.auth.api.resetPasswordForEmail(email);
   }
 
   Future signOut() async {
-    await _firebaseAuth.signOut();
-  }
-
-  Future<Player> _fetchPlayer({String? id}) async {
-    final playerRef = _firestore.collection('players').doc(id);
-    final updatedPlayerDoc = await playerRef.get();
-
-    return Player.fromSnapshot(
-      id: updatedPlayerDoc.id,
-      snapshot: updatedPlayerDoc.data()!,
-    );
-  }
-
-  Future<Player> _createSkirmishUserProfile({
-    required User user,
-    required String? name,
-    required String? tag,
-  }) async {
-    final playerRef = _firestore.collection('players').doc(user.uid);
-
-    await playerRef.set({
-      'name': name,
-      'tag': tag,
-    }, SetOptions(merge: true));
-
-    return _fetchPlayer(id: user.uid);
+    await _supabase.auth.signOut();
   }
 
   Future assertLoggedIn() async {
