@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:skirmish/exceptions/auth_exception.dart';
 import 'package:skirmish/widgets/dialogs/platform_alert_dialog.dart';
 
 import '../../services/auth_service.dart';
@@ -334,6 +335,17 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
         _toggleFormType();
       }
+    } on AuthException catch (e) {
+      final errorText = _formType == EmailSignInFormType.signIn
+          ? 'Sign in failed'
+          : 'Registration failed';
+
+      await PlatformAlertDialog(
+        key: Key('auth_action_failed_dialog'),
+        title: errorText,
+        content: e.message,
+        defaultActionText: 'OK',
+      ).show(context);
     } catch (e) {
       final errorText = _formType == EmailSignInFormType.signIn
           ? 'Sign in failed'
