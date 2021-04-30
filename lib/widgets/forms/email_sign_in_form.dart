@@ -214,42 +214,8 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
           (_) => FocusScope.of(context).requestFocus(
             _formType == EmailSignInFormType.signIn
                 ? _passwordFocusNode
-                : _userNameFocusNode,
+                : _userTagFocusNode,
           ),
-        );
-  }
-
-  TextField _buildNameTextField() {
-    String? nameError;
-    if (_submitted) {
-      widget.nameValidator
-          .isValid(_email)
-          .fold((error) => nameError = error, (_) {});
-    }
-
-    return TextField(
-      key: Key('name_field'),
-      controller: _userNameController,
-      autofillHints: _isLoading ? null : [AutofillHints.givenName],
-      focusNode: _userNameFocusNode,
-      autocorrect: false,
-      decoration: InputDecoration(
-        labelText: 'Name',
-        hintText: 'Alex Wins',
-        enabled: !_isLoading,
-        errorText: nameError,
-      ),
-      keyboardType: TextInputType.name,
-      textInputAction: TextInputAction.next,
-      onEditingComplete: _givenNameEditingComplete,
-      onChanged: (_) => _updateState(),
-    );
-  }
-
-  void _givenNameEditingComplete() {
-    widget.nameValidator.isValid(_userName).fold(
-          (_) => FocusScope.of(context).requestFocus(_userNameFocusNode),
-          (_) => FocusScope.of(context).requestFocus(_userTagFocusNode),
         );
   }
 
@@ -283,6 +249,40 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   void _userTagEditingComplete() {
     widget.nameValidator.isValid(_userTag).fold(
           (_) => FocusScope.of(context).requestFocus(_userTagFocusNode),
+          (_) => FocusScope.of(context).requestFocus(_userNameFocusNode),
+        );
+  }
+
+  TextField _buildNameTextField() {
+    String? nameError;
+    if (_submitted) {
+      widget.nameValidator
+          .isValid(_email)
+          .fold((error) => nameError = error, (_) {});
+    }
+
+    return TextField(
+      key: Key('name_field'),
+      controller: _userNameController,
+      autofillHints: _isLoading ? null : [AutofillHints.givenName],
+      focusNode: _userNameFocusNode,
+      autocorrect: false,
+      decoration: InputDecoration(
+        labelText: 'Name',
+        hintText: 'Alex Wins',
+        enabled: !_isLoading,
+        errorText: nameError,
+      ),
+      keyboardType: TextInputType.name,
+      textInputAction: TextInputAction.next,
+      onEditingComplete: _givenNameEditingComplete,
+      onChanged: (_) => _updateState(),
+    );
+  }
+
+  void _givenNameEditingComplete() {
+    widget.nameValidator.isValid(_userName).fold(
+          (_) => FocusScope.of(context).requestFocus(_userNameFocusNode),
           (_) => FocusScope.of(context).requestFocus(_passwordFocusNode),
         );
   }
